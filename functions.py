@@ -55,12 +55,12 @@ def  StrainToStress(strain,L,M):  # convert strain to stress
     % L, M: averaged lame's and shear modulus
     """
     # calc stress tensor from strain tensor
-    sigma = np.zeros([3,3]);
-    ss = np.matrix(strain);
-
-    sigma[1,1]=(L+2/3*M)*ss.trace() + 2*M*(strain[1,1]-ss.trace()/3);
-    sigma[2,2]=(L+2/3*M)*ss.trace() + 2*M*(strain[2,2]-ss.trace()/3);
-    sigma[0,0]=(L+2/3*M)*ss.trace() + 2*M*(strain[0,0]-ss.trace()/3);
+    sigma = np.zeros((3,3));
+    ss = strain;
+    
+    sigma[0,0]=(L+2/3*M)*ss.trace() + 2*M*(ss[0,0]-ss.trace()/3);
+    sigma[1,1]=(L+2/3*M)*ss.trace() + 2*M*(ss[1,1]-ss.trace()/3);
+    sigma[2,2]=(L+2/3*M)*ss.trace() + 2*M*(ss[2,2]-ss.trace()/3);
 
     sigma[1,2] = 2*M*strain[1,2];
     sigma[1,0] = 2*M*strain[1,0];
@@ -69,8 +69,10 @@ def  StrainToStress(strain,L,M):  # convert strain to stress
     sigma[0,1] = 2*M*strain[0,1];
     sigma[0,2] = 2*M*strain[0,2];
     
-    P = (L+2*M/3)*sigma.trace(); # definition of P
-    return sigma, P;
+    P = (L+2*M/3)*(ss.trace()); # definition of P
+    
+    return sigma；
+    return P;
 
 
 def calTauI(tau0,alpha,beta,y):  # eq. 60
