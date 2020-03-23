@@ -29,15 +29,15 @@ def GetXi(c0,t,dt,mu1,mu2,ti,te):  # eq 59
     % c0: damage coeff. of last time step
     """
     # get damage coefficient c
-	if (t<ti or t>te):
-		dcdt = 0;
-	else:
-		dcdt = mu2*mu1*(mu1-(mu1-mu2)*(t-ti)/(te-ti))**-2.0*(te-ti)**-1.0;
+    if (t<ti or t>te):
+        dcdt = 0;
+    else:
+        dcdt = mu2*mu1*(mu1-(mu1-mu2)*(t-ti)/(te-ti))**-2.0*(te-ti)**-1.0;
 #         Maurizio
 #        dcdt = (t-ti)/(te-ti); # linear 
 #         dcdt = (mu2 + (mu1-mu2)/(1+ ((t-ti)/(te-ti))^8 ) ^1/8 ) / mu2;
-	c = c0+dt*dcdt;
-	return c;
+    c = c0+dt*dcdt;
+    return c;
 
 def second(sigma):
     """
@@ -71,8 +71,7 @@ def  StrainToStress(strain,L,M):  # convert strain to stress
     
     P = (L+2*M/3)*(ss.trace()); # definition of P
     
-    return sigma；
-    return P;
+    return sigma,P;
 
 
 def calTauI(tau0,alpha,beta,y):  # eq. 60
