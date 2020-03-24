@@ -5,6 +5,15 @@
 
 import numpy as np
 
+def TransStrain(eff):  # eq. 67
+    s11 = 2/3*eff[0]- 1/3*eff[1] - 1/3*eff[2] ;
+    s22 = -1/3*eff[0]+ 2/3*eff[1] - 1/3*eff[2] ;
+    s33 = -1/3*eff[0]- 1/3*eff[1] + 2/3*eff[2] ;
+    s12 = eff[3];
+    s13 = eff[4];
+    s23 = eff[5];
+    return s11,s22,s33,s12,s13,s23;
+
 def CalcVp(strain,strain0, D, dt): # based on Horrendorf et al., 2019
     """
     % variables:
@@ -19,6 +28,22 @@ def CalcVp(strain,strain0, D, dt): # based on Horrendorf et al., 2019
     strainRII = np.sqrt(RR);
     vp = 2 * strainRII * D;    
     return vp;
+
+def CalcSlp(strain,strain0,dx,dt,slp0):
+    slp = slp0;
+    strainR = (strain-strain0)/dt;
+    u = strainR[0,0]*dx*dt + slp0;
+   # v = strainR[1,1]*dx + slp0[1];
+   # w = strainR[2,2]*dx + slp0[2];
+    slp = u;
+    return slp;
+
+def CalcEc(rho0,K1,K2,K_a,mu1,mu2,mu_a,strain):
+    ee = (strain[0,0]-strain.trace()/3)**2+(strain[1,1]-strain.trace()/3)**2+(strain[2,2]-strain.trace()/3)**2+2*strain[1,2]**2+2*strain[0,2]**2+2*strain[0,1]**2;
+    Ec = 0.5/rho0*(-(K1-K2)*K1*K2/K_a**2)*strain.trace()**2+1/rho0*(-(mu1-mu2)*mu1*mu2/mu_a**2)*(ee);
+    
+    return Ec;
+
 
 
 def GetXi(c0,t,dt,mu1,mu2,ti,te):  # eq 59
@@ -85,3 +110,13 @@ def calTauI(tau0,alpha,beta,y):  # eq. 60
     tau = np.zeros(np.size(tau0));
     tau = tau0*np.exp(alpha-beta*y);
     return tau;
+
+
+def Get_energy(strain,rho,L,M):
+    
+    rhoE = 1/2*L*(strain[0,0]+strain[1,1]+strain[2,2])**2 + M*(strain[0,0]**2+strain[1,1]**2+strain[2,2]**2+ 2*strain[0,1]**2+ 2*strain[0,2]**2+ 2*strain[1,2]**2);
+    
+    return rhoE;
+    
+
+
